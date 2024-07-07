@@ -44,7 +44,10 @@ func TestSendMessage(t *testing.T) {
 			return resp, nil
 		})
 
-	client, _ := NewChatOpenAI("gpt-3.5-turbo")
+	client, err := NewChatOpenAI("gpt-3.5-turbo")
+	if err != nil {
+		t.Fatalf("Error happens: %v", err)
+	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			have, err := client.SendMessage(tc.message)

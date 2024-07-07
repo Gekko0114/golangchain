@@ -40,7 +40,6 @@ func (c *ChatOpenAI) SendMessage(message []Message) (*Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error marshaling request body: %w", err)
 	}
-
 	// Create a new HTTP request
 	req, err := http.NewRequest("POST", openaiURL, bytes.NewBuffer(requestBodyJSON))
 	if err != nil {
@@ -50,13 +49,11 @@ func (c *ChatOpenAI) SendMessage(message []Message) (*Response, error) {
 	// Set the necessary headers
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("Error sending HTTP request: %w", err)
 	}
 	defer resp.Body.Close()
-
 	// Read the response body
 	respBody, err := io.ReadAll(resp.Body)
 
