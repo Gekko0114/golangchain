@@ -1,0 +1,41 @@
+name: "build"
+
+on:
+  push: # We run tests on non-tagged pushes to main
+    tags: ''
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+  pull_request:  # We also run tests on pull requests targeted at the main branch.
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+  # workflow_dispatch will let us manually trigger the workflow from GitHub actions dashboard.
+  # For example, you can try to build a branch without raising a pull request.
+  # See https://docs.github.com/en/free-pro-team@latest/actions/managing-workflow-runs/manually-running-a-workflow
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        go-version:
+          - "1.22"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: golangci/golangci-lint-action@v2
+      - run: make lint
+
+  test:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        go-version:
+          - "1.22"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      - run: make test
