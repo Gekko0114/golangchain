@@ -8,7 +8,7 @@ import (
 	"github.com/jarcoal/httpmock"
 )
 
-func TestSendMessage(t *testing.T) {
+func TestInvoke(t *testing.T) {
 	tests := []struct {
 		name     string
 		message  []Message
@@ -50,7 +50,7 @@ func TestSendMessage(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			have, err := client.SendMessage(tc.message)
+			have, err := client.Invoke(tc.message)
 			if err != nil {
 				t.Fatalf("Error happens: %v", err)
 			}

@@ -16,7 +16,7 @@ func main() {
 		{Role: "user", Content: "こんにちは"},
 	}
 
-	response, err := llm.SendMessage(msg)
+	response, err := llm.Invoke(msg)
 	if err != nil {
 		fmt.Println(err)
 	}

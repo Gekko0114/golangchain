@@ -29,7 +29,7 @@ func NewChatOpenAI(model string) (*ChatOpenAI, error) {
 	}, nil
 }
 
-func (c *ChatOpenAI) SendMessage(message []Message) (*Response, error) {
+func (c *ChatOpenAI) Invoke(message []Message) (*Response, error) {
 
 	requestBody := Request{
 		Model:    c.model,
