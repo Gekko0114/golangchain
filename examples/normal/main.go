@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golangchain/pkg/lib"
 	"golangchain/pkg/openai"
+	"golangchain/pkg/parser"
 	"golangchain/pkg/prompt"
 )
 
@@ -13,9 +14,10 @@ func main() {
 		fmt.Println(err)
 	}
 	prompt, err := prompt.NewPromptTemplate("{{.Word}}の意味を教えて。")
+	parser := parser.NewStrOutputParser()
 
 	pipeline := lib.NewPipeline()
-	pipeline.Pipe(prompt).Pipe(llm)
+	pipeline.Pipe(prompt).Pipe(llm).Pipe(parser)
 	m := map[string]string{
 		"Word": "因果応報",
 	}
@@ -25,5 +27,4 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Printf("Response: %+v\n", response)
-
 }
