@@ -21,7 +21,7 @@ func NewPromptTemplate(input string) (*PromptTemplate, error) {
 	}, nil
 }
 
-func (t *PromptTemplate) Invoke(input any) (string, error) {
+func (t *PromptTemplate) Invoke(input any) (any, error) {
 	var buf bytes.Buffer
 	if err := t.template.Execute(&buf, input); err != nil {
 		return "", err

@@ -29,11 +29,28 @@ func NewChatOpenAI(model string) (*ChatOpenAI, error) {
 	}, nil
 }
 
-func (c *ChatOpenAI) Invoke(message []Message) (*Response, error) {
-
-	requestBody := Request{
-		Model:    c.model,
-		Messages: message,
+func (c *ChatOpenAI) Invoke(input any) (any, error) {
+	var requestBody Request
+	switch input.(type) {
+	case []Message:
+		messages, _ := input.([]Message)
+		requestBody = Request{
+			Model:    c.model,
+			Messages: messages,
+		}
+	case string:
+		content, _ := input.(string)
+		requestBody = Request{
+			Model: c.model,
+			Messages: []Message{
+				{
+					Role:    "user",
+					Content: content,
+				},
+			},
+		}
+	default:
+		return nil, fmt.Errorf("Error while calling chatOpenAI invoke")
 	}
 
 	requestBodyJSON, err := json.Marshal(requestBody)
