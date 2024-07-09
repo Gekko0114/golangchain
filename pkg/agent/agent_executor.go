@@ -1,15 +1,24 @@
 package agent
 
-import "fmt"
+import (
+	"fmt"
+	"golangchain/pkg/lib"
+)
 
 type AgentExecutor struct {
-	Agent         Agent
+	Agent         *Agent
 	Tools         []Tool
 	MaxIterations int
 }
 
-func NewAgentExecutor() *AgentExecutor {
-	return &AgentExecutor{}
+func InitializeAgent(tools []Tool, llm *lib.Runnable) *AgentExecutor {
+	agent := NewAgent()
+
+	return &AgentExecutor{
+		Agent:         agent,
+		Tools:         tools,
+		MaxIterations: 15,
+	}
 }
 
 func (a *AgentExecutor) Invoke(input any) (any, error) {
