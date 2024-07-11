@@ -1,4 +1,4 @@
-package openai
+package llm
 
 // message represents a single message in the chat
 type Message struct {

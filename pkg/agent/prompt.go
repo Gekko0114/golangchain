@@ -26,4 +26,4 @@ Observation: the result of the action
 Thought: I now know the final answer
 Final Answer: the final answer to the original input question`
 const SYSTEM_MESSAGE_SUFFIX = "Begin! Reminder to always use the exact characters `Final Answer` when responding."
-const HUMAN_MESSAGE = "{input}\n\n{agent_scratchpad}"
+const HUMAN_MESSAGE = "{{ .Input }}\n\n{{ .Agent_scratchpad }}"

@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"golangchain/pkg/lib"
-	"golangchain/pkg/openai"
+	"golangchain/pkg/llm"
 	"golangchain/pkg/parser"
 	"golangchain/pkg/prompt"
 )
 
 func main() {
-	llm, err := openai.NewChatOpenAI("gpt-3.5-turbo")
+	llm, err := llm.NewChatOpenAI("gpt-3.5-turbo")
 	if err != nil {
 		fmt.Println(err)
 	}

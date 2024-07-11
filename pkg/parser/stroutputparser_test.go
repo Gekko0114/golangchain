@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"golangchain/pkg/openai"
+	"golangchain/pkg/llm"
 	"testing"
 )
 
@@ -13,9 +13,9 @@ func TestInvoke(t *testing.T) {
 	}{
 		{
 			name: "template is string",
-			input: &openai.Response{
-				Choices: []openai.Choice{
-					{Message: openai.Message{Role: "assistant", Content: "This is the test response"}},
+			input: &llm.Response{
+				Choices: []llm.Choice{
+					{Message: llm.Message{Role: "assistant", Content: "This is the test response"}},
 				},
 			},
 			expected: "This is the test response",
