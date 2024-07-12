@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"encoding/json"
 	"fmt"
 	"golangchain/pkg/lib"
 	"golangchain/pkg/parser"
@@ -54,20 +55,32 @@ func CreatePrompt(tools map[string]Tool) (*prompt.ChatPromptTemplate, error) {
 	return prompt, nil
 }
 
-func (a *Agent) Plan(intermediateSteps []string) (any, error) {
+func (a *Agent) Plan(intermediateSteps []string) (*NextAction, error) {
+	var nextaction *NextAction
 	agentScratchpad := strings.Join(intermediateSteps, "\n")
 	m := map[string]string{
 		"Input":            a.UserInput,
 		"Agent_scratchpad": agentScratchpad,
 	}
-	prompt, err := a.Prompt.Invoke(m)
+
+	agentDecision, err := a.LLMChain.Invoke(m)
 	if err != nil {
 		return nil, err
 	}
-	agentDecision, err := a.LLMChain.Invoke(prompt)
+	fmt.Printf("agentDecision: %v\n", agentDecision)
+	err = json.Unmarshal([]byte(agentDecision.(string)), &nextaction)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("got an error during Plan: %w", err)
 	}
-	fmt.Println(agentDecision)
-	return agentDecision, err
+	return nextaction, err
+}
+
+type NextAction struct {
+	Thought string
+	Action  Action
+}
+
+type Action struct {
+	Action_name  string
+	Action_input string
 }

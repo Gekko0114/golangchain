@@ -19,11 +19,11 @@ type ChatPromptTemplate struct {
 func NewChatPromptTemplate(system string, human string) (*ChatPromptTemplate, error) {
 	sysTmpl, err := template.New("system").Parse(system)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse template: %w", err)
+		return nil, fmt.Errorf("failed to parse system template: %w", err)
 	}
 	humanTmpl, err := template.New("human").Parse(human)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse template: %w", err)
+		return nil, fmt.Errorf("failed to parse human template: %w", err)
 	}
 	Chat := &ChatTemplate{
 		system: sysTmpl,
@@ -37,7 +37,7 @@ func NewChatPromptTemplate(system string, human string) (*ChatPromptTemplate, er
 func (t *ChatPromptTemplate) Invoke(input any) (any, error) {
 	var sbuf bytes.Buffer
 	if err := t.template.system.Execute(&sbuf, input); err != nil {
-		return "", err
+		return "", fmt.Errorf("system template execute failed: %w", err)
 	}
 	sMes := llm.Message{
 		Role:    "system",
@@ -45,7 +45,7 @@ func (t *ChatPromptTemplate) Invoke(input any) (any, error) {
 	}
 	var hbuf bytes.Buffer
 	if err := t.template.human.Execute(&hbuf, input); err != nil {
-		return "", err
+		return "", fmt.Errorf("human template execute failed: %w", err)
 	}
 	hMes := llm.Message{
 		Role:    "user",

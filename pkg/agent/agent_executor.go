@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"encoding/json"
 	"fmt"
 	"golangchain/pkg/lib"
 )
@@ -20,7 +21,7 @@ func InitializeAgent(tools map[string]Tool, llm lib.Runnable) (*AgentExecutor, e
 	return &AgentExecutor{
 		Agent:         agent,
 		Tools:         tools,
-		MaxIterations: 15,
+		MaxIterations: 5,
 	}, nil
 }
 
@@ -39,36 +40,35 @@ func (a *AgentExecutor) Invoke(input any) (any, error) {
 }
 
 func (a *AgentExecutor) takeNextStep(intermediateSteps []string) (any, error) {
-	var results []any
+	var observation any
 	output, err := a.Agent.Plan(intermediateSteps)
 	if err != nil {
 		return nil, err
 	}
-
-	action := output.(string)
-	var observation any
-	if tool, ok := a.Tools[action]; ok {
-		observation, err = tool.run("aaaaa")
+	if tool, ok := a.Tools[output.Action.Action_name]; ok {
+		observation, err = tool.run(output.Action.Action_input)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error during takeNextStep: %w", err)
 		}
 	}
-	results = append(results, observation)
 
-	return results, nil
+	return observation, nil
 }
 
 func (a *AgentExecutor) call() (any, error) {
 	iterations := 0
-	var intermediateSteps []string
 	var nextStepOutput any
+	var intermediateSteps []string
 	for a.MaxIterations > iterations {
 		nextStepOutput, err := a.takeNextStep(intermediateSteps)
 		if err != nil {
 			return nil, err
 		}
-		// TODO: fix
-		fmt.Println(nextStepOutput)
+		jsonData, err := json.Marshal(nextStepOutput)
+		if err != nil {
+			return nil, err
+		}
+		intermediateSteps = append(intermediateSteps, string(jsonData))
 		iterations += 1
 	}
 	return nextStepOutput, nil

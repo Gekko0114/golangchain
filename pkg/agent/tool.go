@@ -23,7 +23,7 @@ func LoadTools(tools []string) map[string]Tool {
 	for _, toolname := range tools {
 		if tool, ok := AvailableTools[toolname]; ok {
 			confirmedTool := tool
-			confirmedTools[toolname] = confirmedTool
+			confirmedTools[confirmedTool.name()] = confirmedTool
 		}
 	}
 	return confirmedTools
@@ -72,5 +72,6 @@ func (s *SerpAPI) run(input any) (any, error) {
 	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, err
 	}
+	fmt.Printf("serpapi run: %+v\n", response)
 	return response, nil
 }
