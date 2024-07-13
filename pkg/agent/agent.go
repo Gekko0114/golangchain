@@ -55,7 +55,7 @@ func CreatePrompt(tools map[string]Tool) (*prompt.ChatPromptTemplate, error) {
 	return prompt, nil
 }
 
-func (a *Agent) Plan(intermediateSteps []string) (*NextAction, error) {
+func (a *Agent) Plan(intermediateSteps []string) (*NextAction, string, error) {
 	var nextaction *NextAction
 	agentScratchpad := strings.Join(intermediateSteps, "\n")
 	m := map[string]string{
@@ -65,14 +65,18 @@ func (a *Agent) Plan(intermediateSteps []string) (*NextAction, error) {
 
 	agentDecision, err := a.LLMChain.Invoke(m)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
-	fmt.Printf("agentDecision: %v\n", agentDecision)
-	err = json.Unmarshal([]byte(agentDecision.(string)), &nextaction)
+	decision := agentDecision.(string)
+
+	err = json.Unmarshal([]byte(decision), &nextaction)
+	if strings.HasPrefix(decision, "FinalAnswer") {
+		return nil, decision, nil
+	}
 	if err != nil {
-		return nil, fmt.Errorf("got an error during Plan: %w", err)
+		return nil, "", fmt.Errorf("got an error during Plan: %w", err)
 	}
-	return nextaction, err
+	return nextaction, "", err
 }
 
 type NextAction struct {

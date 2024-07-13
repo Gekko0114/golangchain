@@ -26,6 +26,6 @@ ALWAYS use the following format:
 Observation: the result of the action
 ... (this Thought/Action/Observation can repeat N times)
 Thought: I now know the final answer
-Final Answer: the final answer to the original input question`
-const SYSTEM_MESSAGE_SUFFIX = "Begin! Reminder to always use the exact characters `Final Answer` when responding."
+FinalAnswer: the final answer to the original input question`
+const SYSTEM_MESSAGE_SUFFIX = "Begin! Reminder to always use the exact characters `FinalAnswer` when responding."
 const HUMAN_MESSAGE = "{{ .Input }}\n\n{{ .Agent_scratchpad }}"

@@ -16,10 +16,10 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	prompt := "青を英語で言うと、何か？"
+	prompt := "日本の首相の名前は？"
 	result, err := agentExecutor.Invoke(prompt)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("Response: %+v\n", result)
+	fmt.Printf("%+v\n", result)
 }
